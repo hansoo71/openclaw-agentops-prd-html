@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OpenClaw AgentOps for Gemini Enterprise PRD</title>
+<meta name="description" content="Gemini Enterprise Agent Platform 기반 OpenClaw Agent 운영 플랫폼 PRD HTML 문서" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Product Requirements Document · Draft v0.1</div>
+    <h1>OpenClaw AgentOps for Gemini Enterprise</h1>
+    <p>기업 내에서 증가하는 OpenClaw 기반 AI Agent PoC를 Gemini Enterprise Agent Platform 위의 Production 운영체계로 전환하기 위한 Agent 운영·거버넌스 플랫폼입니다.</p>
+    <div class="actions">
+      <a class="btn primary" href="./prd_openclaw-agentops-gemini-enterprise_260525.md">PRD 원문 보기</a>
+      <a class="btn" href="#architecture">아키텍처 보기</a>
+      <a class="btn" href="#requirements">핵심 요구사항</a>
+    </div>
+  </section>
+
+  <div class="grid cards">
+    <div class="card"><b>80%+</b><span>주요 Agent Catalog 등록 목표</span></div>
+    <div class="card"><b>30%+</b><span>PoC → Production 전환율 목표</span></div>
+    <div class="card"><b>1h</b><span>이상 비용·실패율 탐지 목표</span></div>
+    <div class="card"><b>3–5d</b><span>승인 리드타임 목표</span></div>
+  </div>
+
+  <nav class="toc">
+    <a href="#problem">문제정의</a><a href="#solution">제품범위</a><a href="#architecture">구조</a><a href="#requirements">요구사항</a><a href="#roadmap">로드맵</a><a href="#risk">리스크</a>
+  </nav>
+
+  <section id="problem" class="section">
+    <h2>1. 왜 지금 AgentOps인가</h2>
+    <p>기업의 생성형 AI 활용은 Assistant에서 Tool-using Agent와 Multi-Agent Workflow로 이동하고 있습니다. 그러나 Agent PoC가 늘어날수록 “누가 만들었는가, 어떤 권한을 갖는가, 비용은 얼마인가, 실패하면 누가 책임지는가”라는 운영 문제가 커집니다.</p>
+    <div class="kpi">
+      <div class="pill"><strong>운영 표준 부재</strong>Shadow Agent, Owner 부재, 중복 개발</div>
+      <div class="pill"><strong>보안/권한 리스크</strong>Tool Call, 데이터 접근, 감사 추적 미흡</div>
+      <div class="pill"><strong>성과 가시성 부족</strong>비용, ROI, Production 전환율 보고 어려움</div>
+    </div>
+  </section>
+
+  <section id="solution" class="section">
+    <h2>2. 제품 컨셉</h2>
+    <p><b>OpenClaw AgentOps for Gemini Enterprise</b>는 GE 위에서 OpenClaw Agent를 등록·검토·배포·관측·평가·통제하는 운영 계층입니다. 핵심은 Agent 개발 속도를 늦추지 않으면서 기업 운영 기준을 함께 심는 것입니다.</p>
+    <div class="flow">
+      <div class="step"><em>01</em><br><b>Catalog</b><br>Agent, Owner, 목적, 상태 등록</div>
+      <div class="step"><em>02</em><br><b>Review</b><br>보안·권한·운영 체크리스트</div>
+      <div class="step"><em>03</em><br><b>Deploy</b><br>Staging → Production 전환</div>
+      <div class="step"><em>04</em><br><b>Observe</b><br>로그, 실패율, 비용, Tool Call</div>
+      <div class="step"><em>05</em><br><b>Improve</b><br>Human Review와 개선 백로그</div>
+    </div>
+  </section>
+
+  <section id="architecture" class="section">
+    <h2>3. 운영 아키텍처</h2>
+    <div class="grid two">
+      <div>
+        <p>UI/API 계층은 Agent Catalog와 Approval Workflow를 제공하고, Policy Engine은 Tool Access Control과 데이터 접근 정책을 판단합니다. OpenClaw Adapter는 OpenClaw Runtime을 Gemini Enterprise Agent Platform 실행 구조와 연결합니다.</p>
+        <ul>
+          <li>실행 이벤트는 Event Collector로 수집되어 Observability Store에 저장됩니다.</li>
+          <li>비용/품질 Processor가 Agent 단위 비용, 실패율, 피드백, 위험 이벤트를 계산합니다.</li>
+          <li>Dashboard와 Alert가 운영자·보안팀·경영진의 액션으로 연결됩니다.</li>
+        </ul>
+      </div>
+      <img class="arch" src="assets/images/agentops-architecture.svg" alt="OpenClaw AgentOps Architecture" />
+    </div>
+  </section>
+
+  <section id="requirements" class="section">
+    <h2>4. MVP 핵심 요구사항</h2>
+    <div class="req">
+      <div><b>FR-001 Agent Catalog</b><br>Agent 이름, 설명, 업무 목적, Owner, Runtime, 상태를 등록합니다.</div>
+      <div><b>FR-004 Approval Workflow</b><br>Reviewer 지정, 승인/반려/조건부 승인, 코멘트 이력을 관리합니다.</div>
+      <div><b>FR-005 Tool Permission Scope</b><br>Agent별 허용 Tool, 위험도, 승인 필요 여부를 정의합니다.</div>
+      <div><b>FR-008 Execution Log</b><br>Run ID, 상태, latency, tool call, error code, cost event를 수집합니다.</div>
+      <div><b>FR-010 Alert Rule</b><br>실패율, 비용, latency, 정책 위반 기준 알림을 제공합니다.</div>
+      <div><b>FR-011 Executive Dashboard</b><br>전사 Agent 현황, 전환율, 비용, 위험 Agent를 시각화합니다.</div>
+    </div>
+  </section>
+
+  <section id="roadmap" class="section">
+    <h2>5. 단계별 추진 로드맵</h2>
+    <div class="timeline">
+      <div class="tl"><b>Phase 0 · Discovery · 2주</b><br>OpenClaw Runtime/GE 연계 검토, 고객 운영 요구 워크숍, Demo Agent 후보 선정</div>
+      <div class="tl"><b>Phase 1 · AgentOps Foundation · 4~6주</b><br>Catalog, 상태관리, 수동 승인, 기본 실행 로그, 기본 Dashboard</div>
+      <div class="tl"><b>Phase 2 · Governance & Observability · 6~8주</b><br>Tool Access Control, 비용/품질/감사, Alert, Human Review Queue</div>
+      <div class="tl"><b>Phase 3 · Enterprise Scale · 8~12주</b><br>Template Marketplace, 유사 Agent 추천, ROI, Multi-Agent Workflow</div>
+    </div>
+  </section>
+
+  <section id="risk" class="section">
+    <h2>6. 핵심 리스크와 대응</h2>
+    <div class="req">
+      <div class="risk"><b>Runtime 호환성</b><br>Adapter Layer를 분리하고 1~2개 대표 Agent로 호환성 PoC를 선행합니다.</div>
+      <div class="risk"><b>로그/비용 매핑 정확도</b><br>공통 Agent Event Schema와 Cost Attribution Key를 먼저 확정합니다.</div>
+      <div class="risk"><b>권한 정책 복잡도</b><br>고위험 Tool만 강화 승인하고 일반 Tool은 Template 정책으로 단순화합니다.</div>
+      <div class="risk"><b>제품 범위 과대</b><br>Phase 1은 Catalog + Workflow + 기본 로그 + Dashboard에 집중합니다.</div>
+    </div>
+  </section>
+
+  <footer>
+    <p>작성일: 2026.05.25 · 상태: Draft v0.1 · 원천: 1-pager 기반 PRD 확장</p>
+    <p>이미지 생성 모델은 사용하지 않았습니다. 본 문서는 정확한 한국어 라벨과 운영 구조 표현을 위해 deterministic SVG 아키텍처 자산을 포함했습니다.</p>
+  </footer>
+</div>
+</body>
+</html>
